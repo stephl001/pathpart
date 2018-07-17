@@ -11,12 +11,10 @@ module PathPart =
         if m.Success then Some m.Groups.[1].Value else None
     let private (|PropertyName|_|) (part:string) =
         if Regex.IsMatch(part, @"^[a-zA-Z][a-zA-Z0-9_]*$")
-        then Some part
-        else None
+        then Some part else None
 
     let private jsonProperty name (value:Object) =
         new JObject(new JProperty(name, value))
-
     let private jsonCollection name (value:Object) =
         jsonProperty name (new JArray([|value|]))
 
@@ -37,8 +35,7 @@ module PathPart =
     let private getDuplicatePaths = 
         List.groupBy fst >> List.filter (snd >> List.length >> (<>) 1) >> List.map fst
     let private validatePathValues (pv : PathValue list) = 
-        let duplicates = getDuplicatePaths pv
-        match duplicates with
+        match getDuplicatePaths pv with
         | [] -> pv
         | _ -> failwith (sprintf "The following keys were duplicated with different values: %A" duplicates)
 
